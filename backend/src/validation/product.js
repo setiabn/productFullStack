@@ -11,5 +11,5 @@ exports.update = Joi.object({
 }).min(1);
 
 exports.id = Joi.object({
-  id: Joi.number().integer().min(1).required(),
+  id: Joi.string().uuid().required(),
 });

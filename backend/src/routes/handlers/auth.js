@@ -11,10 +11,17 @@ const { ResponseError } = require("../../app/errors");
 const USER_ATTRS = ["uuid", "name", "username", "role"];
 
 exports.login = reqWrapper(async (req, res, next) => {
-  if (req.session?.user)
-    return res.status(200).json({ data: req.session.user });
-
   const { username, password } = validate(authValidation.login, req.body);
+
+  // handle already login
+  if (req.session?.user) {
+    if (req.session.user.username === username)
+      return res.status(200).json({ data: req.session.user });
+
+    return res
+      .status(401)
+      .json({ error: "already login with different account" });
+  }
 
   const user = await User.findOne({ where: { username }, raw: true });
   if (!user) throw new ResponseError(404, "username not found"); //   FIXME: fix error message
@@ -30,11 +37,7 @@ exports.login = reqWrapper(async (req, res, next) => {
 });
 
 exports.getMe = reqWrapper(async (req, res, next) => {
-  const data = req.session?.user;
-  if (!data)
-    return res.status(401).json({ errors: "please login to your account" });
-
-  return res.status(200).json({ data });
+  return res.status(200).json({ data: req.user });
 });
 
 exports.logout = reqWrapper(async (req, res, next) => {

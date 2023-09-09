@@ -3,29 +3,53 @@ const validate = require("../../validation/validate");
 const productValidation = require("../../validation/product");
 const Product = require("../../models/Product");
 const { ResponseError } = require("../../app/errors");
+const User = require("../../models/User");
 
 // =====================================================================================
+const PRODUCT_ATTRS = ["uuid", "name", "price"];
+const USER_ATTRS = ["uuid", "name", "username", "role"];
 
 // ======================================= create =========================================
 exports.create = reqWrapper(async (req, res, next) => {
   const product = validate(productValidation.create, req.body);
+  const userUUID = req.user.uuid;
 
-  const prev = await Product.findOne({
-    where: { productname: product.productname },
-    attributes: ["productname"],
+  // convert user UUID to id
+  const user = await User.findOne({
+    where: { uuid: userUUID },
+    attributes: ["id"],
     raw: true,
   });
-  if (prev) throw new ResponseError(409, "productname already exist");
+  product.userId = user.id;
 
-  const result = await Product.create(product, { raw: true });
+  const result = await Product.create(product, {
+    include: [{ model: User, as: "user", attributes: USER_ATTRS }],
+  });
+  // FIXME: bug, return value not include "user"
+  const data = filterAttrs([...PRODUCT_ATTRS, "user"], result);
 
-  const data = result;
   return res.status(200).json({ data });
 });
 
 // ===================================== getAll =============================================
 exports.getAll = reqWrapper(async (req, res, next) => {
-  const data = await Product.findAll({ attributes: PRODUCT_ATTRS, raw: true });
+  // filter if not admin
+  let filter = {};
+  if (req.user.role != "admin") {
+    // convert user UUID to id
+    const user = await User.findOne({
+      where: { uuid: userUUID },
+      attributes: ["id"],
+      raw: true,
+    });
+    filter = { where: { userId: id } };
+  }
+
+  const data = await Product.findAll({
+    where: filter,
+    attributes: PRODUCT_ATTRS,
+    include: [{ as: "user", model: User, attributes: USER_ATTRS }],
+  });
   return res.status(200).json({ data });
 });
 

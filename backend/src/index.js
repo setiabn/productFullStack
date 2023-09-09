@@ -7,6 +7,7 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const authRouter = require("./routes/routers/auth");
 const userRouter = require("./routes/routers/user");
+const productRouter = require("./routes/routers/product");
 
 const { session } = require("./middlewares/session");
 
@@ -19,6 +20,7 @@ app.use(helmet());
 app.use(session);
 app.use(authRouter);
 app.use("/users", userRouter);
+app.use("/products", productRouter);
 
 app.use(errorHandler);
 

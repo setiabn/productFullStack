@@ -21,7 +21,7 @@ const Product = db.define(
 );
 
 //
-User.hasMany(Product, { as: "products", foreignKey: "userId" });
+User.hasMany(Product);
 Product.belongsTo(User, { as: "user", foreignKey: "userId" });
 //
 

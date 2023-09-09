@@ -4,7 +4,6 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "build": "tsc",
     "dev": "nodemon src/index.js",
     "migrate": "node src/app/migrate.js"
   },
