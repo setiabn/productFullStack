@@ -7,8 +7,8 @@ const router = Router();
 // =======================================================
 router.post("/", authenticated, producthandler.create);
 router.get("/", authenticated, producthandler.getAll);
-router.get("/:id", authenticated, producthandler.get);
-router.put("/:id", authenticated, producthandler.update);
-router.delete("/:id", authenticated, producthandler.delete);
+router.get("/:uuid", authenticated, producthandler.get);
+router.put("/:uuid", authenticated, producthandler.update);
+router.delete("/:uuid", authenticated, producthandler.delete);
 
 module.exports = router;

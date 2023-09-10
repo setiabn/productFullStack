@@ -16,6 +16,6 @@ exports.update = Joi.object({
   role: Joi.valid(...USER_ROLE),
 }).min(1);
 
-exports.id = Joi.object({
-  id: Joi.string().uuid().required(),
+exports.uuid = Joi.object({
+  uuid: Joi.string().uuid().required(),
 });

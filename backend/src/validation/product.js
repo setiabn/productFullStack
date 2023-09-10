@@ -10,6 +10,6 @@ exports.update = Joi.object({
   price: Joi.number().integer().min(1).max(1_000_000_000),
 }).min(1);
 
-exports.id = Joi.object({
-  id: Joi.string().uuid().required(),
+exports.uuid = Joi.object({
+  uuid: Joi.string().uuid().required(),
 });
