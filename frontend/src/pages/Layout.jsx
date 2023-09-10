@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
-import { getMe } from "../redux/authReducer";
+import { getMe, reset } from "../redux/authReducer";
 
 const Layout = () => {
   const user = useSelector((state) => state.auth.user);
@@ -12,6 +12,7 @@ const Layout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // dispatch(reset());
     dispatch(getMe());
   }, [dispatch]);
 

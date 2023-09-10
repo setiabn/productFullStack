@@ -1,24 +1,43 @@
-import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import Table from "../components/Table";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const ActionButton = ({ id }) => {
   return (
-    <button onClick={() => console.log(id)}>
-      <AiOutlineEdit size={20} className="text-blue-800" />
-    </button>
+    <div className="flex items-center gap-2 sm:gap-6">
+      <button onClick={() => console.log(id)}>
+        <AiOutlineEdit size={20} className="text-blue-800" />
+      </button>
+      <button onClick={() => console.log(id)}>
+        <AiOutlineDelete size={20} className="text-red-600" />
+      </button>
+    </div>
   );
 };
 
-const headers = ["#", "Nama", "Role", "Aksi"];
-const rows = [
-  ["1", "Admin 23", "admin", <ActionButton key={1} id={"klcsklncjkcs"} />],
-  ["2", "Admin 23", "admin", <ActionButton key={2} id={"klcsklncjkcs"} />],
-  ["1", "Admin 23", "admin", <ActionButton key={3} id={"klcsklncjkcs"} />],
-  ["1", "Admin 23", "admin", <ActionButton key={4} id={"klcsklncjkcs"} />],
-  ["1", "Admin 23", "admin", <ActionButton key={5} id={"klcsklncjkcs"} />],
-];
-
 const UserPage = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("/users")
+      .then((resp) => {
+        setUsers(resp.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const headers = ["#", "Nama", "Role", "Aksi"];
+  const rows = users.map((user, i) => [
+    i + 1,
+    user.name,
+    user.role,
+    <ActionButton key={i} id={user.uuid} />,
+  ]);
+
   return (
     <div className="flex-1 mx-4 my-4 md:m-12 rounded bg-white px-4 py-4 md:px-12 md:py-8">
       <div className="flex flex-col sm:flex-row items-center justify-between">

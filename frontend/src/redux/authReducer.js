@@ -1,4 +1,4 @@
-import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
@@ -12,8 +12,7 @@ const initialState = {
 export const login = createAsyncThunk("auth/login", async (user, thunkApi) => {
   try {
     const response = await axios.post("/login", user);
-
-    return response.data;
+    return response.data.data;
   } catch (error) {
     if (error.response) {
       const message = error.response.data.errors;
@@ -36,7 +35,7 @@ export const getMe = createAsyncThunk("auth/getMe", async (user, thunkApi) => {
   }
 });
 
-export const logoutUser = createAsyncThunk(
+export const logout = createAsyncThunk(
   "auth/logout",
   async (user, thunkApi) => {
     await axios.delete("http://localhost:8000/logout");
@@ -64,7 +63,7 @@ const authSlice = createSlice({
       state.message = action.payload;
     });
 
-    // Get user login
+    // Get me
     builder.addCase(getMe.pending, (state) => {
       state.isLoading = true;
     });
@@ -74,6 +73,21 @@ const authSlice = createSlice({
       state.user = action.payload;
     });
     builder.addCase(getMe.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
+
+    // Get user logout
+    builder.addCase(logout.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(logout.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.user = null;
+    });
+    builder.addCase(logout.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;

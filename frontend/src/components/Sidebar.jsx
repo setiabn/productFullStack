@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import {
   AiOutlineBoxPlot,
@@ -6,6 +5,9 @@ import {
   AiOutlineDashboard,
   AiOutlineLogout,
 } from "react-icons/ai";
+
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/authReducer";
 
 const menus = [
   {
@@ -81,19 +83,31 @@ const Menu = ({ menu }) => {
  */
 const Sidebar = () => {
   const isOpen = useSelector((state) => state.sidebar.value);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
   return (
     <aside
-      className={`flex flex-col justify-between transition-all duration-300 pt-8 bg-white overflow-x-clip ${
-        isOpen ? "w-40" : "w-0 text-transparent"
+      className={`absolute sm:relative z-50  flex flex-col justify-between transition-all duration-300 pt-8 bg-white overflow-x-clip ${
+        isOpen
+          ? "h-full w-full sm:w-64 overflow-y-auto shadow-lg sm:shadow-none"
+          : "w-0 text-transparent"
       }`}
     >
       <ul>
-        {menus.map((menu, i) => (
-          <Menu key={i} menu={menu} />
-        ))}
+        {menus.map((menu, i) => {
+          if (menu?.role) {
+            const matchedRole = menu.role.includes(user?.role);
+            if (!matchedRole) return;
+          }
+
+          return <Menu key={i} menu={menu} />;
+        })}
       </ul>
-      <button className="bg-slate-200 flex items-center h-10 mx-1 px-4 hover:bg-red-500 hover:text-white">
+      <button
+        onClick={() => dispatch(logout())}
+        className="bg-slate-200 flex items-center h-10 mx-1 px-4 hover:bg-red-500 hover:text-white"
+      >
         <AiOutlineLogout size={23} />
         <span className="text-center w-full">Log Out</span>
       </button>
