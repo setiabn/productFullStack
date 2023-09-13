@@ -6,7 +6,7 @@ const Dashboard = () => {
   return (
     <div className="flex items-center justify-center">
       <p className="text-2xl">Selamat datang,</p>
-      <p className="ml-2 text-2xl font-bold">{user.name}</p>
+      <p className="ml-2 text-2xl font-bold">{user?.name}</p>
     </div>
   );
 };

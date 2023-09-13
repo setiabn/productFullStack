@@ -8,6 +8,8 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/authReducer";
+import { close, open } from "../redux/sidebarReducer";
+import { useEffect } from "react";
 
 const menus = [
   {
@@ -86,13 +88,21 @@ const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
+  // auto open/close sidebar on different screen
+  useEffect(() => {
+    // sm=640px, tailwind breakpoint
+    window.innerWidth <= 640 ? dispatch(close()) : dispatch(open());
+    window.addEventListener("resize", () => {
+      window.innerWidth <= 640 ? dispatch(close()) : dispatch(open());
+    });
+  }, [dispatch]);
+
   return (
     <aside
-      className={`absolute sm:relative z-50  flex flex-col justify-between transition-all duration-300 pt-8 bg-white overflow-x-clip ${
-        isOpen
-          ? "h-full w-full sm:w-64 overflow-y-auto shadow-lg sm:shadow-none"
-          : "w-0 text-transparent"
-      }`}
+      className={`
+      pt-8 bg-white
+      flex flex-col justify-between overflow-x-clip min-w-[240px]
+      transition-all duration-30  ${isOpen ? "ml-0" : "-ml-[240px]"}`}
     >
       <ul>
         {menus.map((menu, i) => {
@@ -106,7 +116,9 @@ const Sidebar = () => {
       </ul>
       <button
         onClick={() => dispatch(logout())}
-        className="bg-slate-200 flex items-center h-10 mx-1 px-4 hover:bg-red-500 hover:text-white"
+        className="
+        flex items-center h-10 mx-1 px-4
+        bg-slate-200 hover:bg-red-500 hover:text-white"
       >
         <AiOutlineLogout size={23} />
         <span className="text-center w-full">Log Out</span>

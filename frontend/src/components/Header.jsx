@@ -11,7 +11,7 @@ const Header = () => {
   const isOpen = useSelector((state) => state.sidebar.value);
 
   return (
-    <header className="h-16 border-b flex items-center px-3">
+    <header className="h-16 border-b flex items-center px-3 w-screen sm:w-full">
       <button onClick={() => dispatch(toggle())}>
         {isOpen ? (
           <AiOutlineMenuFold size={23} />
