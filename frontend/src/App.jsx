@@ -8,7 +8,6 @@ import ProductPage from "./pages/ProductPage";
 import UserPage from "./pages/UserPage";
 import reduxStore from "./redux/store";
 import LoginPage from "./pages/LoginPage";
-import Protected from "./components/Protected";
 // ==============================================================================
 
 function App() {
@@ -20,11 +19,7 @@ function App() {
         { path: "/dashboard", element: <Dashboard /> },
         {
           path: "/users",
-          element: (
-            <Protected>
-              <UserPage />
-            </Protected>
-          ),
+          element: <UserPage />,
         },
         { path: "/products", element: <ProductPage /> },
       ],

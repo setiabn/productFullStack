@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,15 +7,21 @@ import { useEffect } from "react";
 import { getMe } from "../redux/authReducer";
 
 const Layout = () => {
+  const { user, isSuccess, isLoading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const user = useSelector((state) => state.auth.user);
   useEffect(() => {
-    // dispatch(reset());
     dispatch(getMe());
-    if (!user) navigate("/login");
-  }, [dispatch, user, navigate]);
+  }, []);
+
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-screen bg-black opacity-40">
+        Loading...
+      </div>
+    );
+
+  if (isSuccess && !user) return <Navigate to={"/login"} />;
 
   return (
     <div className="h-screen flex">

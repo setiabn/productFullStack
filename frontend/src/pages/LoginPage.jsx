@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { login, reset } from "../redux/authReducer";
+import { getMe, login, reset } from "../redux/authReducer";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
@@ -17,6 +17,7 @@ const Login = () => {
   );
 
   useEffect(() => {
+    dispatch(getMe());
     if (user) navigate("/dashboard");
   }, [user, navigate]);
 
@@ -81,7 +82,10 @@ const Login = () => {
 
           <button
             type="submit"
-            className="flex items-center justify-center bg-green-700 hover:bg-green-600 mt-8 py-2 text-white"
+            className="flex items-center justify-center 
+            bg-green-700  hover:bg-green-600 mt-8 py-2 text-white select-none
+            disabled:pointer-events-none disabled:opacity-60 disabled:cursor-wait
+            "
             disabled={isLoading}
           >
             {isLoading && <Spinner />}

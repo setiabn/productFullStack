@@ -2,6 +2,8 @@ import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import Table from "../components/Table";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ActionButton = ({ id }) => {
   return (
@@ -18,6 +20,7 @@ const ActionButton = ({ id }) => {
 
 const UserPage = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -29,6 +32,12 @@ const UserPage = () => {
         console.log(err);
       });
   }, []);
+
+  const { user } = useSelector((state) => state.auth);
+  console.log(!user?.role === "admin");
+
+  const isAdmin = user?.role === "admin";
+  if (!isAdmin) navigate("/dashboard");
 
   const headers = ["#", "Nama", "Role", "Aksi"];
   const rows = users.map((user, i) => [
